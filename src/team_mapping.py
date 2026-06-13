@@ -1,11 +1,9 @@
 # This file contains a mapping of team names to their standardized forms. *few yet*
 TEAM_MAPPING = {
+    "United States": "USA",
     "Iran": "IR Iran",
-    "North Korea": "Korea DPR",
     "South Korea": "Korea Republic",
-    "USA": "United States",
-    "Ivory Coast": "Côte d'Ivoire",
+    "North Korea": "Korea DPR",
     "DR Congo": "Congo DR",
-    "Cape Verde": "Cape Verde Islands",
-    "Czech Republic": "Czechia"
+    "Kyrgyzstan": "Kyrgyz Republic"
 }
