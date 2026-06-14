@@ -5,5 +5,6 @@ TEAM_MAPPING = {
     "South Korea": "Korea Republic",
     "North Korea": "Korea DPR",
     "DR Congo": "Congo DR",
-    "Kyrgyzstan": "Kyrgyz Republic"
+    "Kyrgyzstan": "Kyrgyz Republic",
+    "Cape Verde": "Cabo Verde"
 }
