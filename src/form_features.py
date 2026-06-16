@@ -70,5 +70,5 @@ matches["home_last5_goals_conceded"] = home_last5_goals_conceded
 matches["away_last5_goals_conceded"] = away_last5_goals_conceded
 
 
-print(matches[["home_team", "away_team", "home_last5_winrate", "away_last5_winrate"]].head(10))
-#matches.to_csv("data/processed/matches_with_form.csv", index=False)
+#print(matches[["home_team", "away_team", "home_last5_winrate", "away_last5_winrate"]].head(10))
+matches.to_csv("data/processed/matches_with_form.csv", index=False)
