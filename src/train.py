@@ -56,6 +56,52 @@ model.fit(X_train_scaled, y_train)
 pred = model.predict(X_test_scaled)
 
 from sklearn.metrics import accuracy_score, classification_report
+
+print("LR Accuracy:")
 print(f"accuracy score: {accuracy_score(y_test, pred)}")
 print(f"classification report: {classification_report(y_test, pred)}")
 
+print(matches1["target"].value_counts(normalize=True))
+
+from sklearn.ensemble import RandomForestClassifier
+
+rf = RandomForestClassifier(
+    n_estimators=300,
+    max_depth=10,
+    min_samples_split = 10,
+    random_state=42,
+    n_jobs=-1
+)
+
+rf.fit(X_train_scaled, y_train)
+
+rf_pred = rf.predict(X_test_scaled)
+
+print("RF Accuracy:")
+print(accuracy_score(y_test, rf_pred))
+print(classification_report(y_test, rf_pred))
+
+import pandas as pd
+
+importance = pd.DataFrame({"feature": FEATURES, "importance": rf.feature_importances_})
+print(importance.sort_values("importance", ascending=False))
+
+
+from xgboost import XGBClassifier
+
+xgb = XGBClassifier(
+    n_estimators=300,
+    max_depth=6,
+    learning_rate=0.6,
+    objective="multi:soft",
+    num_class=3,
+    random_state=42
+)
+
+xgb.fit(X_train_scaled, y_train)
+
+xgb_pred = xgb.predict(X_test_scaled)
+
+print("XGB Accuracy:")
+print(accuracy_score(y_test, xgb_pred))
+print(classification_report(y_test, xgb_pred))
