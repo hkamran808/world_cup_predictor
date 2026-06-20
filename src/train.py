@@ -2,6 +2,24 @@ from data_loader import load_data
 results, rankings, world_cup, matches, matches1 = load_data()
 
 #print(matches1.columns.tolist())
+TOURNAMENT_WEIGHTS = {
+    "Friendly": 1,
+
+    "FIFA World Cup qualification": 2,
+    "UEFA Euro qualification": 2,
+    "African Cup of Nations qualification": 2,
+
+    "AFC Asian Cup": 3,
+    "African Cup of Nations": 3,
+    "Gold Cup": 3,
+    "Copa América": 3,
+    "UEFA Euro": 3,
+
+    "FIFA World Cup": 4
+}
+
+matches1["tournament_weight"] = (matches1["tournament"].map(TOURNAMENT_WEIGHTS).fillna(2))  #default = 2
+
 FEATURES = [
     "home_rank",
     "away_rank",
@@ -19,6 +37,11 @@ FEATURES = [
 
     "home_last5_goals_conceded",
     "away_last5_goals_conceded",
+    
+    "home_last5_goal_diff",
+    "away_last5_goal_diff",
+    
+    "tournament_weight",
 
     "neutral"
 ]
@@ -32,8 +55,8 @@ TARGET = "target"
 #since football is temporal data, we will split on size but not randomly
 matches1 = matches1.sort_values("date")
 matches1 = matches1.dropna(subset=FEATURES + [TARGET])  # we drop rows with missing values in features or target
-split = int(len(matches1) * 0.8)
 
+split = int(len(matches1) * 0.8)
 train = matches1.iloc[:split]
 test = matches1.iloc[split:]
 
@@ -49,17 +72,17 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-from sklearn.linear_model import LogisticRegression
+#from sklearn.linear_model import LogisticRegression
 
-model = LogisticRegression(max_iter=1000)
-model.fit(X_train_scaled, y_train)
-pred = model.predict(X_test_scaled)
+#model = LogisticRegression(max_iter=1000)
+#model.fit(X_train_scaled, y_train)
+#pred = model.predict(X_test_scaled)
 
 from sklearn.metrics import accuracy_score, classification_report
 
-print("LR Accuracy:")
-print(f"accuracy score: {accuracy_score(y_test, pred)}")
-print(f"classification report: {classification_report(y_test, pred)}")
+#print("LR Accuracy:")
+#print(f"accuracy score: {accuracy_score(y_test, pred)}")
+#print(f"classification report: {classification_report(y_test, pred)}")
 
 print(matches1["target"].value_counts(normalize=True))
 
@@ -93,7 +116,7 @@ xgb = XGBClassifier(
     n_estimators=300,
     max_depth=6,
     learning_rate=0.6,
-    objective="multi:soft",
+    objective="multi:softprob",
     num_class=3,
     random_state=42
 )
