@@ -72,20 +72,21 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-#from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+"""
+from sklearn.linear_model import LogisticRegression
 
-#model = LogisticRegression(max_iter=1000)
-#model.fit(X_train_scaled, y_train)
-#pred = model.predict(X_test_scaled)
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train_scaled, y_train)
+pred = model.predict(X_test_scaled)
 
-from sklearn.metrics import accuracy_score, classification_report
 
-#print("LR Accuracy:")
-#print(f"accuracy score: {accuracy_score(y_test, pred)}")
-#print(f"classification report: {classification_report(y_test, pred)}")
+print("LR Accuracy:")
+print(f"accuracy score: {accuracy_score(y_test, pred)}")
+print(f"classification report: {classification_report(y_test, pred)}")
+"""
 
-print(matches1["target"].value_counts(normalize=True))
-
+""" #i chose xgb since random forest was skipping draws, i analyzed confusion matrix because of it
 from sklearn.ensemble import RandomForestClassifier
 
 rf = RandomForestClassifier(
@@ -103,19 +104,48 @@ rf_pred = rf.predict(X_test_scaled)
 print("RF Accuracy:")
 print(accuracy_score(y_test, rf_pred))
 print(classification_report(y_test, rf_pred))
+print(confusion_matrix(y_test, rf_pred))
 
 import pandas as pd
 
 importance = pd.DataFrame({"feature": FEATURES, "importance": rf.feature_importances_})
 print(importance.sort_values("importance", ascending=False))
-
-
+"""
+# now i need to try hyperparameter tuning to get best out of xgb
 from xgboost import XGBClassifier
+from sklearn.model_selection import RandomizedSearchCV
 
+param_grid = {
+    "n_estimators": [200,400,600,800,1000],
+    "max_depth": [3,4,5,6,8],
+    "learning_rate": [0.01,0.03,0.05,0.1],
+    "subsample": [0.7,0.8,0.9,1.0],
+    "colsample_bytree": [0.7,0.8,0.9,1.0]
+}
+
+search = RandomizedSearchCV(
+    estimator=XGBClassifier(objective="multi:softprob", num_class=3, random_state=42),
+    param_distributions=param_grid,
+    n_iter=10,
+    cv=3,
+    scoring="accuracy",
+    n_jobs=-1,
+    verbose=2,
+    random_state=42
+)
+
+#search.fit(X_train_scaled, y_train)
+
+#print(search.best_params_)
+#print(search.best_score_)
+
+# tuning results: {'subsample': 0.8, 'n_estimators': 200, 'max_depth': 4, 'learning_rate': 0.03, 'colsample_bytree': 0.7}
 xgb = XGBClassifier(
-    n_estimators=300,
-    max_depth=6,
-    learning_rate=0.6,
+    n_estimators=200,
+    sub_sample=0.8,
+    colsample_bytree=0.7,
+    max_depth=4,
+    learning_rate=0.03,
     objective="multi:softprob",
     num_class=3,
     random_state=42
@@ -128,3 +158,9 @@ xgb_pred = xgb.predict(X_test_scaled)
 print("XGB Accuracy:")
 print(accuracy_score(y_test, xgb_pred))
 print(classification_report(y_test, xgb_pred))
+print(confusion_matrix(y_test, xgb_pred))
+
+#print(matches1["target"].value_counts(normalize=True))
+
+import joblib
+joblib.dump(xgb, "models/best_xgb_model.pkl")
