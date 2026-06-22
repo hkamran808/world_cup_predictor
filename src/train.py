@@ -164,3 +164,4 @@ print(confusion_matrix(y_test, xgb_pred))
 
 import joblib
 joblib.dump(xgb, "models/best_xgb_model.pkl")
+joblib.dump(scaler, "models/scaler.pkl")
