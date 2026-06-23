@@ -11,6 +11,17 @@ def simulate_match(probabilities):
 from predictor import MatchPredictor
 
 predictor = MatchPredictor()
-for _ in range(10):
-    probabilities = predictor.predict_match("France", "Brazil")
-    print(probabilities)
+
+probabilities = predictor.predict_match("France", "Brazil")
+
+results = {
+    "home_win": 0,
+    "draw": 0,
+    "away_win": 0
+}
+
+for _ in range(10000):
+    result = simulate_match(probabilities)
+    results[result] += 1
+
+print(results)
