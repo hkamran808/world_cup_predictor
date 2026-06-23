@@ -4,7 +4,7 @@ class MatchPredictor:
     def __init__(self):
         self.model = joblib.load("models/best_xgb_model.pkl")
         self.scaler = joblib.load("models/scaler.pkl")
-        self.matches = pd.read_csv("data\processed\matches_with_form.csv")
+        self.matches = pd.read_csv("data/processed/matches_with_form.csv")
 
     def get_latest_team_stats(self, team):
         home_games = self.matches[self.matches["home_team"] == team]
@@ -57,6 +57,8 @@ class MatchPredictor:
             "neutral": 1
         }
 
+        return features
+
     def predict_match(self, home_team, away_team):
         features = self.build_feature_vector(home_team, away_team)
         X = pd.DataFrame([features])
@@ -65,9 +67,9 @@ class MatchPredictor:
         proba = self.model.predict_proba(X_scaled)[0]
 
         return {
-            "home_win": round(proba[2], 3),
-            "away_win": round(proba[0], 3),
-            "draw": round(proba[1], 3)
+            "home_win": float(round(proba[2], 3)),
+            "away_win": float(round(proba[0], 3)),
+            "draw": float(round(proba[1], 3))
         }
     
 if __name__ == "__main__":
