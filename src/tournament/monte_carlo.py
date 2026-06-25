@@ -8,7 +8,7 @@ def simulate_match(probabilities):
     )[0]
     return outcome
 
-from predictor import MatchPredictor
+from src.predictor import MatchPredictor
 
 predictor = MatchPredictor()
 
