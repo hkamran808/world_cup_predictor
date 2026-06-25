@@ -14,7 +14,6 @@ def simulate_knockout_match(team1, team2):
     elif result == "away_win":
         return team2
     else:
-        # In case of a draw, we can simulate extra time and penalties
         # to be more realistic, we'll just simulate it as if it is penalty shootout with random module
         import random
         return random.choice([team1, team2])
