@@ -1,10 +1,19 @@
+from lzma import MODE_FAST
+
 import joblib
 import pandas as pd
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+MODEL_PATH = BASE_DIR / "models" / "best_xgb_model.pkl"
+SCALER_PATH = BASE_DIR / "models" / "scaler.pkl"
+MATCHES_PATH = BASE_DIR / "data" / "processed" / "matches_with_form.csv"
 class MatchPredictor:
     def __init__(self):
-        self.model = joblib.load("models/best_xgb_model.pkl")
-        self.scaler = joblib.load("models/scaler.pkl")
-        self.matches = pd.read_csv("data/processed/matches_with_form.csv")
+        self.model = joblib.load(MODEL_PATH)
+        self.scaler = joblib.load(SCALER_PATH)
+        self.matches = pd.read_csv(MATCHES_PATH)
 
     def get_latest_team_stats(self, team):
         home_games = self.matches[self.matches["home_team"] == team]

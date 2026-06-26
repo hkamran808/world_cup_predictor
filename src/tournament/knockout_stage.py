@@ -1,5 +1,3 @@
-from matplotlib.pylab import ranf
-
 from src.predictor import MatchPredictor
 from src.tournament.monte_carlo import simulate_match
 
