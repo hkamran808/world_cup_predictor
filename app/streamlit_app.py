@@ -132,6 +132,39 @@ if page == "Match Predictor":
         st.write("The two teams appear evenly matched according to the available features")
     for reason in reasons:
         st.write("✅", reason)
+
+elif page == "Tournament Simulator":
+    st.title("🏆 Tournament Simulator")
+    mode = st.radio(
+        "Mode",
+        [
+            "Official 2026",
+            "Custom"
+        ]
+    )
+
+from src.tournament.teams import OFFICIAL_TEAMS
+from src.tournament.group_stage import generate_groups
+
+if mode == "Official 2026":
+    selected_teams = OFFICIAL_TEAMS
+else:
+    selected_teams = st.multiselect("Choose 48 Teams", teams, default=teams[:48])
+
+if st.button("Randomize Groups"):
+    st.write("Randomizing groups...")
+    groups = generate_groups(selected_teams)
+
+for group_name, group_teams in groups.items():
+    st.subheader(f"Group {group_name}")
+    for team in group_teams:
+        #st.write(team)
+        st.selectbox("", teams, index=teams.index(team, key=f"{group_name}_{team}"))
+
+if st.button("Simulate Tournament"):
+    st.write("Simulating tournament...")
+    
+
 """
 home = st.text_input("Home Team")
 away = st.text_input("Away Team")
